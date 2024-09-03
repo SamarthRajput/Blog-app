@@ -1,0 +1,52 @@
+Hono very similar to express, its a http framework only its work in multiple environments including cloudflare workers express doesnot
+ 
+few more routes that we need for eg we need a list of all the blogs, so we should eventually have another endpoint 
+called GET /api/v1/blog/bulk which gives me all the blogs that currently exists on the server.
+
+Hono gives us a single object which we usually called c which basically means the context, so c here stands for context, context basically means it has all your request data, all your response data 
+all the environment variables, what ever you need access to is present in the context variable thats why is called context, it has the context of your request and all you environment variables also you will find in this context
+
+
+When we are creating a new connection pool,we are telling prisma ki I have a database out there but i dont want people to directly connect to it. 
+so pls create a connection pool which will maintain a pool of connections to the database and your end users can connect to this connection pool 
+you end application doesnt directly have to connect to the database, it is needed because we cannot have multiple connections to the database, you can have 
+as many connections as you want to the connection pool
+
+wrangler.toml file is what actually contains your environment variables that will be used by the cloudflare workers,
+here i will put the connection pool url bcz this is where the backend application will pick things from and our backend application needs to connect to the connection pool
+and not the real database
+
+we are not using docker for postgres locally because our connection pool url cannot connect to the local database, so we cannot run database locally.
+
+If the migrate command doesnt work locally 
+I pushed this repositry over to github, i pulled this github repositry over to an AWS machine of mine, on that AWS machine I ran the migrate command
+and then on this AWS machine this migrations folder was created, i pushed from my AWS machine over to github and then i copied over this files to here or i can pulled code over here
+
+what ever secrets your application needs for example the connection pool url, they are stored in wrangler.toml, the place to use them is index.ts
+the way to get access to it is c.env.the specific environment variable you are trying to access which is in our case is DATABASE_URL
+
+we should use 
+//@ts-ignore 
+ki typescript ignore the next line error, its a bad practice to have ts-ignore in your code 
+
+ideally the JWT_SECRET should be present in the wrangler.toml file because we dont want our jwt secret to be shown to the outside world
+
+middleware is something that runs before a request and only if next() is called does the actually handler get called
+
+if u are using a Node.js based edge environment, then the pooled connection will work fine with neon.db pooled url
+if u are using a different js runtime (similar to AWS lambda/ cloudflare workers) is when neon.db pooled connection might not work
+the pooled connection that u get from neon.db does not have a bunch of prisma dependencies that the prisma pooled connection does  
+
+npx prisma generate --no-engine we added --no-engine because we are running it in a serverless environment,  we basically dont need to generate a few things when we are running this command
+
+Specifically cloudflares serverless functions, if you ever want access to an environment variable in cloudflare for eg the DATABASE_URL which we put in wrangler.toml, if we want access it in index.ts file
+we cannot access it globally, this environment variable is not accessible to you globally, which is why this prisma initialisation actually needs to happen inside each and every route that exists 
+this c variable is what will give us the access to the DATABASE_URL which we need to inject in the PrismaClient
+
+type inference in zod which basically says ki bhai given this runtime variable, we can actually extract the type, that we night use on the frontend
+but if we want just the infered type of the input, then we get that by using this z.infer that lets you infer the type of the input
+it is good for you to wherever, you have defined the zod variables also export the types, so that your frontend can use them  
+
+changing declaration in tscongif.json in common module to true because if we want to publish a project to npm we should not just publish our javascript bits but also publish our types 
+it creates a .d.ts file that lets you publish to npm 
+node_modules are automatically get ignored by npm

@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// the id will be string a primary key and by default it will be uuid(), uuid is a popular format to create very long random strings, so that there is very low probability
+// of collision, there will be very low probability of two of them being the same it look something like this 8ac1cb25-ddf1-4c43-a11e-8c2bd941eac1, that why is a very popular way to store ids in the database
+// array of posts 
+model User{
+  id        String  @id @default(uuid())
+  email     String  @unique
+  name      String? 
+  password  String
+  posts     Post[]
+}
+
+// author is a User and the authorId field is how they are related to the id field in User table
+// So id field of a User and the authorId field of the Post table is how the data related.
+model Post {
+  id        String  @id @default(uuid())
+  title     String
+  content   String
+  published Boolean @default(false)
+  author    User    @relation(fields:[authorId], references: [id])
+  authorId  String
+}
