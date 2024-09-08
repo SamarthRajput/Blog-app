@@ -4,6 +4,7 @@ import { withAccelerate } from '@prisma/extension-accelerate';
 import { verify } from 'hono/jwt';
 import { userRouter } from './routes/user';
 import { blogRouter } from './routes/blog';
+import { cors } from 'hono/cors';
 
 // whenever we are initializing hono, we tell it these are my bindings, these are the environment variables that are present 
 // we have to pass in generics to make typescript happy, specifically we in this case we had to pass in this Bindings which represents what c.env will contain  
@@ -14,6 +15,9 @@ const app = new Hono<{
     JWT_SECRET: string
   }
 }>()
+
+// any request that comes to any where doesnt matter we use the cors middleware, which means our backend can talk to the frontend 
+app.use('/*', cors());
 
 // any request that is coming to /api/v1/user/.. which now reach to userRouter
 app.route("/api/v1/user", userRouter);

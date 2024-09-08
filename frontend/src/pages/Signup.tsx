@@ -1,5 +1,16 @@
+import { Auth } from "../components/Auth"
+import { Quote } from "../components/Quote"
+
 export const Signup = () => {
-    return <div>
-        Signup
+    // grid needs to have a single column if it greater than large 
+    // by default toh single column, but it becomes greater than large then it will be 2 parts 
+    return <div className="grid grid-cols-1 lg:grid-cols-2 ">
+        <div>
+            <Auth type="signup" />
+        </div>
+        {/* We need to hide the Quote when the screen becomes small, the break point is large screen, hidden by default and if it becomes greater than large then it becomes block */}
+        <div className="hidden lg:block">
+            <Quote />
+        </div>
     </div>
 }
