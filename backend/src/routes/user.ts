@@ -42,10 +42,10 @@ userRouter.post('/signup', async (c) => {
     
       // sign() argument1 -> the object that i am signing, usually the only thing that we need to sign the jwt with is this id over here and argument2 a secret to sign it with
       // 
-      const token = await sign({ id: user.id }, c.env.JWT_SECRET);
+      const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
       return c.json({ 
         message: "Signedup successfully",
-        jwt: token
+        token: jwt
       });
       // i got back the user object from here bcz i need access to the id 
     }
