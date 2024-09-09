@@ -32,8 +32,8 @@ blogRouter.use('/*', async (c, next) => {
     try {
         const authHeader = c.req.header("authorization") || "";
         // we verify the authHeader bcz we need to verify the actual  
-        const token = authHeader.split(" ")[1];
-        const user = await verify(token, c.env.JWT_SECRET);
+        // const token = authHeader.split(" ")[1];
+        const user = await verify(authHeader, c.env.JWT_SECRET);
     
         // if user does exists, which means we got back the jwt
         // we can set on the context
@@ -126,7 +126,18 @@ blogRouter.get('/bulk', async (c) => {
         datasourceUrl: c.env.DATABASE_URL
     }).$extends(withAccelerate());
      
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+        select: {
+            id: true,
+            title: true,
+            content: true,
+            author: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
     return c.json({
         posts
     });
@@ -143,6 +154,16 @@ blogRouter.get('/:id', async (c) => {
         const post = await prisma.post.findUnique({
             where: {
                 id: id
+            },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
 
