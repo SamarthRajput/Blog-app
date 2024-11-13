@@ -12,7 +12,7 @@ export const FrontPage = () => {
 function Header(){
     return <div className="flex justify-between border-b border-black px-10 py-4">
         <div className="font-bold text-3xl ml-40 mt-2">
-            Medium
+            Blog App
         </div>
         <div className="mt-2 mr-8">
             <button className="text-md mr-5 text-slate-800 text-center">Our story</button>
